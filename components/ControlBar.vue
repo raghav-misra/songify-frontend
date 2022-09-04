@@ -1,8 +1,8 @@
 <template>
     <aside>
         <section class="meta-bar">
-            <b>BLASTED</b>
-            <small>Sewerperson</small>
+            <b>blasted</b>
+            <small>sewerperson</small>
         </section>
 
         <section class="control-bar">
@@ -16,15 +16,9 @@
         </section>
         
         <section class="queue-bar">
-            <button class="icon" title="View Queue">
+            <NuxtLink class="link icon" title="View Queue" to="/queue">
                 <i class="fa-solid fa-list"></i>
-            </button>
-
-            <button class="icon" title="Toggle Volume">
-                <i class="fa-solid fa-volume-high"></i>
-            </button>
-            
-            <input type="range">
+            </NuxtLink>
         </section>
     </aside>
 </template>
