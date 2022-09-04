@@ -1,21 +1,23 @@
-export const useLoginState = () => useState("login", () => false);
-
 interface IUserState {
-    username: string | null;
-    email: string | null;
-    playlists: ({
-        _id: string;
-        name: string;
-    })[];
+    token: string | null;
+    user: {
+        _id: string | null;
+        username: string | null;
+    };
 }
 
 export const useUserState = () => useState<IUserState>("user", () => ({
-    username: null,
-    email: null,
-    playlists: [
-        {
-            _id: "34567uijhgf",
-            name: "sauce"
-        }
-    ]
+    token: null,
+    user: {
+        _id: null,
+        username: null
+    }
 }));
+
+export const useLoginState = () => {
+    const userState = useUserState();
+    return computed(() =>
+        typeof userState.value.token === "string" &&
+        typeof userState.value.user.username === "string"
+    );
+};

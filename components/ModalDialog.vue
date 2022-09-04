@@ -1,12 +1,14 @@
-<script setup lang="ts">
+<script setup lang="ts">import { StyleValue } from 'vue';
+
 const props = defineProps<{
     tag?: string;
+    style?: StyleValue;
 }>();
 </script>
 
 <template>
     <component :is="tag || 'div'" class="overlay">
-        <div class="modal container">
+        <div class="modal container" :style="style">
             <slot />
         </div>
     </component>

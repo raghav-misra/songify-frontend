@@ -10,4 +10,9 @@ export default defineNuxtConfig({
         ],
         title: "songify"
     },
+    runtimeConfig: {
+        public: {
+            apiEndpoint: "http://localhost:8080/api"
+        }
+    }
 });
