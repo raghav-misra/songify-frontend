@@ -52,7 +52,7 @@ section {
 }
 
 .progress-bar {
-    background: var(--gray);
+    background: var(--dark);
     height: 0.8rem;
     border-radius: 10px;
     margin: 0 0.5rem;

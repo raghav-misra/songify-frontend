@@ -4,13 +4,13 @@
     --dark: #1C1F22;
     --dark-accent: #090A0B;
     --dark-translucent: #090a0bbb;
-    --gray: #656f7a;
+    --gray: #b0bdcc;
     --main: #aa86d9;
     --alt: #50FFB1;
 }
 
 html {
-    color: white;
+    color: var(--gray);
 }
 
 * {
@@ -41,13 +41,17 @@ html {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: white;
+    background: var(--gray);
 }
 
 hr {
     height: 0;
     border: none;
-    border-top: 1px white solid;
+    border-top: 1px var(--gray) solid;
+}
+
+button {
+    border: none;
 }
 
 .button {
@@ -86,7 +90,7 @@ input {
     background: transparent;
     border: none;
     padding: 0.25rem 0;
-    border-bottom: 1px white solid;
+    border-bottom: 1px var(--gray) solid;
 }
 
 .icon-left {
