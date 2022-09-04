@@ -1,9 +1,15 @@
+<script setup lang="ts">
+const props = defineProps<{
+    tag?: string;
+}>();
+</script>
+
 <template>
-    <div class="overlay">
+    <component :is="tag || 'div'" class="overlay">
         <div class="modal container">
             <slot />
         </div>
-    </div>
+    </component>
 </template>
 
 <style scoped>
@@ -26,5 +32,7 @@
     flex-direction: column;
     align-items: stretch;
     min-width: 50vw;
+    border: 1px var(--gray) solid;
+    border-radius: 5px;
 }
 </style>
