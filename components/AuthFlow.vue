@@ -1,8 +1,4 @@
 <script setup lang="ts">
-const isLoggedIn = useLoginState();
-
-const userState = useUserState();
-
 const authData = reactive({
     isSignup: true,
     username: "",
@@ -38,8 +34,9 @@ async function completeAuthentication() {
     });
 
     if (response.success) {
-        delete response.success;
-        userState.value = response;
+        userState.token = response.token;
+        userState.user = response.user;
+
         formMessage.prefix = "success";
         formMessage.message = "good job you made an account."
     } else {

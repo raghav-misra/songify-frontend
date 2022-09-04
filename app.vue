@@ -1,8 +1,3 @@
-<script setup lang="ts">
-const isLoggedIn = useLoginState();
-
-</script>
-
 <template>
     <div id="root">
         <template v-if="isLoggedIn">
