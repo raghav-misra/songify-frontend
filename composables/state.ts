@@ -21,3 +21,8 @@ export const useLoginState = () => {
         typeof userState.value.user.username === "string"
     );
 };
+
+export const usePlayerState = () => useState("player", () => ({
+    song: null,
+    position: null
+}));

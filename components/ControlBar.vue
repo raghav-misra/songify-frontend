@@ -49,6 +49,7 @@ section {
 .progress-container {
     display: flex;
     flex: 1;     
+    align-items: center;
 }
 
 .progress-bar {
