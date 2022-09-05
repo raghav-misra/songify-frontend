@@ -1,8 +1,30 @@
 <script setup lang="ts">
-    
+const progressBarWidth = computed(() => player.length === 0 ? 0 : (player.currentPosition * 100 / player.length));
+
+function transformTime(time: number) {
+    const min = Math.floor(time / 60).toString();
+    const sec = Math.floor(time % 60).toString();
+    return `${min}:${sec.length < 2 ? `0${sec}` : sec}`;
+}
+
+const showQueueDialog = ref(false);
 </script>
 
 <template>
+    <Transition name="page">
+        <ModalDialog v-if="showQueueDialog">
+            <header class="modal-heading">
+                <h2><b>queue:</b></h2>
+                <button class="button icon" style="margin-left: auto;" @click="showQueueDialog = false;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </header>
+            <div v-for="(song, i) in queue" :key="song.id">
+                <SongDisplay :song="song" :queue-song-position="i" />
+            </div>
+        </ModalDialog>
+    </Transition>
+
     <aside>
         <section class="meta-bar">
             <div class="thumbnail">
@@ -15,34 +37,49 @@
         </section>
 
         <section class="control-bar">
+            <div class="actions">
+                <button class="button icon" title="view queue" @click="showQueueDialog = true;">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <button class="button icon" title="previous">
+                    <i class="fa-solid fa-backward"></i>
+                </button>
+                <button class="button icon" title="play / pause">
+                    <i v-if="['paused', 'empty'].includes(player.state)" class="fa-solid fa-play"></i>
+                    <i v-else class="fa-solid fa-pause"></i>
+                </button>
+                <button class="button icon" title="next" @click="queueManager.moveNext();">
+                    <i class="fa-solid fa-forward"></i>
+                </button>
+                <button class="button icon" title="loop song">
+                    <i class="fa-solid fa-repeat"></i>
+                </button>
+            </div>
             <div class="progress-container">
-                <small>0:05</small>
+                <small>{{ transformTime(player.currentPosition) }}</small>
                 <div class="progress-bar">
-                    <div class="progress-filler"></div>
+                    <div class="progress-filler" :style="`width: ${progressBarWidth}%;`"></div>
                 </div>
-                <small>3:28</small>
+                <small>{{ transformTime(player.length) }}</small>
             </div>
         </section>
+
+        <section></section>
     </aside>
 </template>
 
 <style scoped>
 aside {
     background: var(--dark-accent);
-    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    /* flex-direction: column;   */
+    align-items: stretch;
+    padding: 1rem;
 }
 
 section {
     flex: 1;
-}
-
-.control-bar {
-    flex: 2;
-    display: flex;
-    align-items: stretch;
 }
 
 .meta-bar {
@@ -52,6 +89,20 @@ section {
 
 .meta-bar b {
     display: block;
+}
+
+.control-bar {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    width: min(100%, 768px);
+}
+
+.control-bar .actions {
+    margin: 0 auto;
+    margin-bottom: 0.5rem;
 }
 
 .progress-container {
@@ -92,5 +143,11 @@ section {
 
 .thumbnail img {
     height: calc(3.75rem * 1.33333333);
+}
+
+.modal-heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 </style>

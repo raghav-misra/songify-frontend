@@ -12,6 +12,7 @@
 html {
     color: var(--gray);
     line-height: 1.5rem;
+    font-size: 14px;
 }
 
 * {
@@ -92,11 +93,15 @@ button {
     color: var(--main);
 }
 
-input {
+input, select {
     background: transparent;
     border: none;
     padding: 0.25rem 0;
     border-bottom: 1px var(--gray) solid;
+}
+
+option {
+    color: var(--dark-accent);
 }
 
 .icon-left {
@@ -109,4 +114,76 @@ input {
 
 .actions > * {
     margin-right: 0.75rem;
+}
+
+.nav-item {
+    background: transparent;
+    text-align: left;
+    padding: 1rem 2rem;
+    text-decoration: none;
+}
+
+.nav-item.clickable:hover,
+.nav-item.clickable:active,
+.nav-item.nav-item.clickable.is-active {
+    background: var(--dark);
+}
+
+.page-enter-active {
+    animation: bounce-in 0.75s;
+}
+
+.page-leave-active {
+    animation: bounce-out 0.75s;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-out {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1)
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+.options-modal {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.options-modal > * {
+    margin: 0;
 }

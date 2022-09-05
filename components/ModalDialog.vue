@@ -1,14 +1,16 @@
-<script setup lang="ts">import { StyleValue } from 'vue';
+<script setup lang="ts">
+import { StyleValue } from 'vue';
 
 const props = defineProps<{
     tag?: string;
     style?: StyleValue;
+    customClass?: string;
 }>();
 </script>
 
 <template>
     <component :is="tag || 'div'" class="overlay">
-        <div class="modal container" :style="style">
+        <div class="modal container" :style="style" :class="customClass">
             <slot />
         </div>
     </component>
@@ -25,11 +27,12 @@ const props = defineProps<{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0;
 }
 
 .modal {
     padding: 2rem;
-    background: var(--dark);
+    background: var(--dark-accent);
     display: flex;
     flex-direction: column;
     align-items: stretch;

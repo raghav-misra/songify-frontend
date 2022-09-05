@@ -34,6 +34,6 @@ main {
     flex: 1;
     display: flex;
     align-items: stretch;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 </style>
