@@ -6,8 +6,8 @@ const authData = reactive({
 });
 
 const formMessage = reactive({
-    prefix: null,
-    message: null,
+    prefix: null as string | null,
+    message: null as string | null,
 });
 
 async function completeAuthentication() {

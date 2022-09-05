@@ -1,8 +1,17 @@
+<script setup lang="ts">
+    
+</script>
+
 <template>
     <aside>
         <section class="meta-bar">
-            <b>blasted</b>
-            <small>sewerperson</small>
+            <div class="thumbnail">
+                <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
+            </div>
+            <div>
+                <b>{{ player.song?.title || "bruh im done" }}</b>
+                <small>{{ player.song?.artist || "play a song already" }}</small>
+            </div>
         </section>
 
         <section class="control-bar">
@@ -14,19 +23,13 @@
                 <small>3:28</small>
             </div>
         </section>
-        
-        <section class="queue-bar">
-            <NuxtLink class="link icon" title="View Queue" to="/queue">
-                <i class="fa-solid fa-list"></i>
-            </NuxtLink>
-        </section>
     </aside>
 </template>
 
 <style scoped>
 aside {
     background: var(--dark-accent);
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,13 +45,18 @@ section {
     align-items: stretch;
 }
 
+.meta-bar {
+    display: flex;
+    align-items: center;
+}
+
 .meta-bar b {
     display: block;
 }
 
 .progress-container {
     display: flex;
-    flex: 1;     
+    flex: 1;
     align-items: center;
 }
 
@@ -57,23 +65,32 @@ section {
     height: 0.8rem;
     border-radius: 10px;
     margin: 0 0.5rem;
-    width: 100%;  
+    width: 100%;
     display: flex;
-    align-items: stretch; 
+    align-items: stretch;
     overflow: hidden;
 }
 
 .progress-filler {
     width: 50%;
-    background: white;
+    background: var(--alt);
     border-radius: 10px;
 }
 
-.progress-filler:hover {
-    background: var(--alt);
+.thumbnail {
+    height: 3.75rem;
+    min-width: 3.75rem;
+    max-width: 3.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-right: 1rem;
+    border-radius: 5px;
+    border: 2px var(--dark) solid;
 }
 
-.queue-bar {
-    text-align: right;
+.thumbnail img {
+    height: calc(3.75rem * 1.33333333);
 }
 </style>

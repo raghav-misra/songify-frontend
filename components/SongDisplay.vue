@@ -6,7 +6,7 @@ const props = defineProps<{
 
 <template>
     <div class="song-result" :key="song.id">
-        <button class="button icon icon-left" @click="">
+        <button class="button icon icon-left" @click="playImmediately(song)">
             <i class="fa-solid fa-play"></i>
         </button>
         <div class="thumbnail">
@@ -25,7 +25,7 @@ const props = defineProps<{
     align-items: center;
 }
 
-.song-result .thumbnail {
+.thumbnail {
     height: 3.75rem;
     min-width: 3.75rem;
     max-width: 3.75rem;
@@ -37,7 +37,7 @@ const props = defineProps<{
     border-radius: 5px;
 }
 
-.song-result .thumbnail img {
+.thumbnail img {
     height: calc(3.75rem * 1.33333333);
 }
 </style>
