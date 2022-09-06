@@ -4,13 +4,14 @@ import { StyleValue } from 'vue';
 const props = defineProps<{
     tag?: string;
     style?: StyleValue;
+    maxHeight?: true;
     customClass?: string;
 }>();
 </script>
 
 <template>
     <component :is="tag || 'div'" class="overlay">
-        <div class="modal container" :style="style" :class="customClass">
+        <div class="modal container" :style="style" :class="[customClass, maxHeight && 'max-height']">
             <slot />
         </div>
     </component>
@@ -25,9 +26,16 @@ const props = defineProps<{
     right: 0;
     background: var(--dark-translucent);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 0;
+    padding: 1rem;
+}
+
+.max-height {
+    flex: 1;
+    overflow-y: scroll;
 }
 
 .modal {
@@ -38,6 +46,5 @@ const props = defineProps<{
     align-items: stretch;
     min-width: 50vw;
     border: 1px var(--gray) solid;
-    border-radius: 5px;
 }
 </style>

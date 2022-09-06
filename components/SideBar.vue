@@ -42,11 +42,13 @@ async function createPlaylist() {
         </ModalDialog>
     </Transition>
     <nav>
-        <div class="nav-item">
-            <h2 style="color: var(--main)">
+        <div class="nav-item" style="color: var(--main)">
+            <h2>
                 <span class="material-icons-round icon-left">
                     earbuds
                 </span>
+            </h2>
+            <h2>
                 <b>songify</b>
             </h2>
         </div>

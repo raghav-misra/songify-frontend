@@ -19,8 +19,10 @@ onMounted(async () => {
 function startPlaylist(shuffle: boolean) {
     if (!currentPlaylist.value) return;
     
+    queue.value = [];
+    
     if (shuffle) {
-        queueManager.addToQueue(...shuffleArray(currentPlaylist.value.songs));
+        queueManager.addToQueue(...shuffleArray([...currentPlaylist.value.songs]));
     } else {
         queueManager.addToQueue(...currentPlaylist.value.songs);
     }

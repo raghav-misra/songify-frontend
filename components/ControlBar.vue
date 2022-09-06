@@ -12,7 +12,7 @@ const showQueueDialog = ref(false);
 
 <template>
     <Transition name="page">
-        <ModalDialog v-if="showQueueDialog">
+        <ModalDialog v-if="showQueueDialog" max-height>
             <header class="modal-heading">
                 <h2><b>queue:</b></h2>
                 <button class="button icon" style="margin-left: auto;" @click="showQueueDialog = false;">
@@ -22,8 +22,8 @@ const showQueueDialog = ref(false);
 
                 </button>
             </header>
-            <div v-for="(song, i) in queue" :key="song.id">
-                <SongDisplay :song="song" :queue-song-position="i" />
+            <div v-for="song in queue" :key="song.id">
+                <SongDisplay :song="song" :is-in-queue="true" />
             </div>
         </ModalDialog>
     </Transition>

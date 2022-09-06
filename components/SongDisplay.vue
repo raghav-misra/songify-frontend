@@ -1,15 +1,18 @@
 <script setup lang="ts">
 const props = defineProps<{
     song: ISongData;
-    queueSongPosition?: number;
+    isInQueue?: boolean;
 }>();
 
 const showOptionsModal = ref(false);
 const playlistToAddTo = ref("");
 
 function removeFromQueue() {
-    if (props.queueSongPosition !== undefined) {
-        queue.value.splice(props.queueSongPosition, 1);
+    if (props.isInQueue) {
+        const index = queue.value.findIndex(s => s.id === props.song.id);
+        if (index > -1) {
+            queue.value.splice(index, 1);
+        }
     }
 }
 
@@ -44,7 +47,7 @@ async function addToPlaylist() {
             <button class="nav-item clickable" @click="queueManager.playNext(song); showOptionsModal = false;">
                 play it next.
             </button>
-            <button v-if="typeof queueSongPosition === 'number'" class="nav-item clickable"
+            <button v-if="isInQueue" class="nav-item clickable"
                 @click="removeFromQueue(); showOptionsModal = false;">
                 remove from queue.
             </button>
@@ -123,6 +126,5 @@ async function addToPlaylist() {
 .add-playlist select {
     padding: 0;
     border: none;
-    margin-left: -0.325rem;
 }
 </style>

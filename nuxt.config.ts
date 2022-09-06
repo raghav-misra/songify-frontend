@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            apiEndpoint: "http://localhost:8080/api"
+            apiEndpoint: process.env.API_ENDPOINT
         }
     }
 });
