@@ -70,12 +70,33 @@ audioInstance.addEventListener("ended", () => {
         moveNext();
     }
 });
+
 audioInstance.addEventListener("play", () => {
     player.playing = true;
     player.paused = false;
 });
+
 audioInstance.addEventListener("pause", () => {
     player.paused = true;
 });
+
+if ("mediaSession" in navigator) {
+    navigator.mediaSession.setActionHandler("play", () => togglePlay());
+    navigator.mediaSession.setActionHandler("pause", () => togglePlay());
+    navigator.mediaSession.setActionHandler("nexttrack", () => moveNext());
+
+    watchEffect(() => {
+        if (!player.song) return;
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: player.song.title,
+            artist: player.song.artist,
+            album: "songify",
+            artwork: [
+                { src: player.song.thumbnail }
+            ]
+        });
+    });
+}
 
 export const queueManager = { playNow, playNext, moveNext, addToQueue, togglePlay };
