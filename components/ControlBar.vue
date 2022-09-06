@@ -9,7 +9,7 @@ const showQueueDialog = ref(false);
         <QueueDisplay v-if="showQueueDialog" @close="showQueueDialog = false;" />
     </Transition>
 
-    <aside class="desktop-controls">
+    <aside class="desktop-controls is-desktop">
         <section class="meta-bar">
             <div class="thumbnail">
                 <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
@@ -63,6 +63,27 @@ const showQueueDialog = ref(false);
 
         <section></section>
     </aside>
+
+    <aside class="mobile-controls is-mobile">
+        <section class="meta-bar">
+            <div class="thumbnail">
+                <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
+            </div>
+            <div>
+                <b>{{ player.song?.title || "bruh im done" }}</b>
+                <small>{{ player.song?.artist || "play a song already" }}</small>
+            </div>
+        </section>
+
+        <button class="button icon icon-left" title="play / pause" @click="queueManager.togglePlay">
+            <span v-if="player.paused || !player.playing" class="material-icons-round">
+                play_arrow
+            </span>
+            <span v-else class="material-icons-round">
+                pause
+            </span>
+        </button>
+    </aside>
 </template>
 
 <style scoped>
@@ -70,9 +91,16 @@ aside {
     background: var(--dark-accent);
     display: flex;
     justify-content: space-between;
-    /* flex-direction: column;   */
     align-items: stretch;
+}
+
+.desktop-controls {
     padding: 1rem;
+}
+
+.mobile-controls {
+    padding: 0.25rem 0;
+    height: 3.75rem;
 }
 
 section {
@@ -138,6 +166,9 @@ section {
     align-items: center;
     overflow: hidden;
     margin-right: 1rem;
+}
+
+.desktop-controls .thumbnail {
     border-radius: 5px;
     border: 2px var(--dark) solid;
 }

@@ -16,6 +16,12 @@ html {
     overflow-y: hidden;
 }
 
+@media screen and (max-width: 768px) {
+    html {
+        font-size: 12px;
+    }
+}
+
 * {
     box-sizing: border-box;
     color: inherit;
@@ -196,4 +202,18 @@ option {
 
 .options-modal > * {
     margin: 0;
+}
+
+.is-mobile {
+    display: none !important;
+}
+
+@media screen and (max-width: 768px) {
+    .is-mobile {
+        display: flex !important;
+    }
+
+    .is-desktop {
+        display: none !important;
+    }
 }
