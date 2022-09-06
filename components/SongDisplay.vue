@@ -33,7 +33,9 @@ async function addToPlaylist() {
                 </div>
 
                 <button class="button icon" style="margin-left: auto;" @click="showOptionsModal = false;">
-                    <i class="fa-solid fa-xmark"></i>
+                    <span class="material-icons-round">
+                        close
+                    </span>
                 </button>
             </header>
             <button class="nav-item clickable" @click="queueManager.playNow(song); showOptionsModal = false;">
@@ -42,17 +44,12 @@ async function addToPlaylist() {
             <button class="nav-item clickable" @click="queueManager.playNext(song); showOptionsModal = false;">
                 play it next.
             </button>
-            <button 
-                v-if="typeof queueSongPosition === 'number'" 
-                class="nav-item clickable" 
-                @click="removeFromQueue(); showOptionsModal = false;"
-            >
+            <button v-if="typeof queueSongPosition === 'number'" class="nav-item clickable"
+                @click="removeFromQueue(); showOptionsModal = false;">
                 remove from queue.
             </button>
-            <button v-else
-                class="nav-item clickable" 
-                @click="queueManager.addToQueue(song); 
-                showOptionsModal = false;">
+            <button v-else class="nav-item clickable" @click="queueManager.addToQueue(song);
+            showOptionsModal = false;">
                 add to queue.
             </button>
             <button class="nav-item clickable add-playlist">
@@ -69,8 +66,17 @@ async function addToPlaylist() {
 
     <div class="song-result" :key="song.id">
         <button class="button icon icon-left" @click="queueManager.playNow(song)">
-            <i class="fa-solid fa-play"></i>
+            <span class="material-icons-round">
+                play_arrow
+            </span>
         </button>
+
+        <button class="button icon-left" @click="showOptionsModal = true;">
+            <span class="material-icons-round">
+                more_horiz
+            </span>
+        </button>
+
         <div class="thumbnail">
             <img :src="song.thumbnail">
         </div>
@@ -78,9 +84,6 @@ async function addToPlaylist() {
             <h3>{{ song.title }}</h3>
             <p>{{ song.artist }}</p>
         </div>
-        <button class="button icon" style="margin-left: auto;" @click="showOptionsModal = true;">
-            <i class="fa-solid fa-ellipsis"></i>
-        </button>
     </div>
 </template>
 

@@ -16,7 +16,10 @@ const showQueueDialog = ref(false);
             <header class="modal-heading">
                 <h2><b>queue:</b></h2>
                 <button class="button icon" style="margin-left: auto;" @click="showQueueDialog = false;">
-                    <i class="fa-solid fa-xmark"></i>
+                    <span class="material-icons-round">
+                        close
+                    </span>
+
                 </button>
             </header>
             <div v-for="(song, i) in queue" :key="song.id">
@@ -61,12 +64,8 @@ const showQueueDialog = ref(false);
                         fast_forward
                     </span>
                 </button>
-                <button 
-                    class="button icon" 
-                    title="loop song" 
-                    @click="player.looping = !player.looping"
-                    :class="[player.looping && 'is-active']"
-                >
+                <button class="button icon" title="loop song" @click="player.looping = !player.looping"
+                    :class="[player.looping && 'is-active']">
                     <span class="material-icons-round">
                         repeat_one
                     </span>

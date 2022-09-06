@@ -31,7 +31,8 @@ async function createPlaylist() {
                     </span>
                     <b>to new adventures!</b>
                 </button>
-                <button type="button" class="button solid" style="--accent: var(--gray);" @click="isAddPlaylistDialogOpen = false;">
+                <button type="button" class="button solid" style="--accent: var(--gray);"
+                    @click="isAddPlaylistDialogOpen = false;">
                     <span class="icon-left material-icons-round">
                         sentiment_very_dissatisfied
                     </span>
@@ -43,18 +44,24 @@ async function createPlaylist() {
     <nav>
         <div class="nav-item">
             <h2 style="color: var(--main)">
-                <i class="fa-solid fa-headphones-simple icon-left"></i>
+                <span class="material-icons-round icon-left">
+                    earbuds
+                </span>
                 <b>songify</b>
             </h2>
         </div>
 
         <NavLink to="/" style="margin-right: 0.75rem;">
-            <i class="icon-left fa-solid fa-magnifying-glass"></i>
+            <span class="material-icons-round icon-left">
+                manage_search
+            </span>
             <b>search</b>
         </NavLink>
 
         <button class="nav-item clickable" style="margin-right: 0.75rem;" @click="isAddPlaylistDialogOpen = true;">
-            <i class="icon-left fa-solid fa-plus"></i>
+            <span class="material-icons-round icon-left">
+                playlist_add
+            </span>
             <b>new playlist</b>
         </button>
 
