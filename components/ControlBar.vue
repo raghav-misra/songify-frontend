@@ -1,34 +1,15 @@
 <script setup lang="ts">
 const progressBarWidth = computed(() => player.length === 0 ? 0 : (player.currentPosition * 100 / player.length));
 
-function transformTime(time: number) {
-    const min = Math.floor(time / 60).toString();
-    const sec = Math.floor(time % 60).toString();
-    return `${min}:${sec.length < 2 ? `0${sec}` : sec}`;
-}
-
 const showQueueDialog = ref(false);
 </script>
 
 <template>
     <Transition name="page">
-        <ModalDialog v-if="showQueueDialog" max-height>
-            <header class="modal-heading">
-                <h2><b>queue:</b></h2>
-                <button class="button icon" style="margin-left: auto;" @click="showQueueDialog = false;">
-                    <span class="material-icons-round">
-                        close
-                    </span>
-
-                </button>
-            </header>
-            <div v-for="song in queue" :key="song.id">
-                <SongDisplay :song="song" :is-in-queue="true" />
-            </div>
-        </ModalDialog>
+        <QueueDisplay v-if="showQueueDialog" @close="showQueueDialog = false;" />
     </Transition>
 
-    <aside>
+    <aside class="desktop-controls">
         <section class="meta-bar">
             <div class="thumbnail">
                 <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
@@ -163,11 +144,5 @@ section {
 
 .thumbnail img {
     height: calc(3.75rem * 1.33333333);
-}
-
-.modal-heading {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
 }
 </style>

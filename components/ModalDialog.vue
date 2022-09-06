@@ -31,6 +31,7 @@ const props = defineProps<{
     align-items: center;
     margin: 0;
     padding: 1rem;
+    z-index: 6;
 }
 
 .max-height {
@@ -47,4 +48,16 @@ const props = defineProps<{
     min-width: 50vw;
     border: 1px var(--gray) solid;
 }
+
+@media screen and (max-width: 768px) {
+    .overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .modal {
+        flex: 1;
+        overflow-y: scroll;
+    }
+} 
 </style>

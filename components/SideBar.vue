@@ -3,19 +3,21 @@ const isAddPlaylistDialogOpen = ref(false);
 const playlistName = ref("");
 const router = useRouter();
 
-async function createPlaylist() {
-    const createPlaylistResult = await api("POST")<{
-        success: boolean;
-        playlist: ICondensedPlaylist;
-    }>(`/playlists`, {
-        name: playlistName.value
-    });
+const isMobileModalShowing = ref(false);
 
-    if (createPlaylistResult.success) {
-        playlists.value.push(createPlaylistResult.playlist);
-        isAddPlaylistDialogOpen.value = false;
-        router.push(`/playlists/${createPlaylistResult.playlist.playlistId}`);
-    }
+async function createPlaylist() {
+const createPlaylistResult = await api("POST")<{
+success: boolean;
+playlist: ICondensedPlaylist;
+}>(`/playlists`, {
+name: playlistName.value
+});
+
+if (createPlaylistResult.success) {
+playlists.value.push(createPlaylistResult.playlist);
+isAddPlaylistDialogOpen.value = false;
+router.push(`/playlists/${createPlaylistResult.playlist.playlistId}`);
+}
 }
 </script>
     
@@ -41,7 +43,10 @@ async function createPlaylist() {
             </div>
         </ModalDialog>
     </Transition>
-    <nav>
+
+    <button class="button solid is-mobile menu-button" @click="isMobileModalShowing = true;">menu</button>
+
+    <nav :class="[isMobileModalShowing && 'is-showing']">
         <div class="nav-item" style="color: var(--main)">
             <h2>
                 <span class="material-icons-round icon-left">
@@ -51,6 +56,12 @@ async function createPlaylist() {
             <h2>
                 <b>songify</b>
             </h2>
+
+            <button class="button icon is-mobile" style="margin-left: auto; color: var(--gray);">
+                <span class="material-icons-round" @click="isMobileModalShowing = false;">
+                    close
+                </span>
+            </button>
         </div>
 
         <NavLink to="/" style="margin-right: 0.75rem;">
@@ -78,6 +89,7 @@ async function createPlaylist() {
 <style scoped>
 nav {
     width: 15rem;
+    z-index: 2;
 }
 
 nav,
@@ -90,5 +102,38 @@ nav,
 
 .playlist-selection {
     overflow-y: scroll;
+}
+
+.is-mobile {
+    display: none;
+}
+
+.menu-button {
+    position: fixed;
+    z-index: 1;
+    top: 2rem;
+    right: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+    nav {
+        border: 1px var(--gray) solid;
+        flex: 1;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        display: none;
+    }
+
+    nav.is-showing {
+        display: flex;
+    }
+
+    .is-mobile {
+        display: block;
+    }
 }
 </style>
