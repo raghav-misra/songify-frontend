@@ -101,6 +101,7 @@ aside {
 .mobile-controls {
     padding: 0.25rem 0;
     height: 3.75rem;
+    align-items: center;
 }
 
 section {
