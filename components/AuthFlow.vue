@@ -37,6 +37,16 @@ async function completeAuthentication() {
         userState.token = response.token;
         userState.user = response.user;
 
+        const playlistResult = await api("GET")<{
+            success: boolean;
+            message: string;
+            playlists: ICondensedPlaylist[]
+        }>(`/playlists/user/${encodeURIComponent(userState.user._id as string)}`);
+
+        if (playlistResult.success) {
+            playlists.value.push(...playlistResult.playlists);
+        }
+
         formMessage.prefix = "success";
         formMessage.message = "good job you made an account."
     } else {

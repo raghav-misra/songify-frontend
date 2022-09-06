@@ -4,52 +4,64 @@ const props = defineProps<{
     queueSongPosition?: number;
 }>();
 
-const showModal = ref(false);
+const showOptionsModal = ref(false);
+const playlistToAddTo = ref("");
 
 function removeFromQueue() {
     if (props.queueSongPosition !== undefined) {
         queue.value.splice(props.queueSongPosition, 1);
     }
 }
+
+async function addToPlaylist() {
+    if (playlistToAddTo.value === "") return;
+    showOptionsModal.value = false;
+    await api("POST")(`/playlists/${playlistToAddTo.value}/songs`, {
+        song: props.song
+    });
+    playlistToAddTo.value = "";
+}
 </script>
 
 <template>
     <Transition name="page">
-        <ModalDialog v-if="showModal" custom-class="options-modal">
+        <ModalDialog v-if="showOptionsModal" custom-class="options-modal">
             <header class="nav-item modal-heading">
                 <div class="song-meta">
                     <b>{{ song.title }}</b>
                     <small>{{ song.artist }}</small>
                 </div>
 
-                <button class="button icon" style="margin-left: auto;" @click="showModal = false;">
+                <button class="button icon" style="margin-left: auto;" @click="showOptionsModal = false;">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </header>
-            <button class="nav-item clickable" @click="queueManager.playNow(song); showModal = false;">
+            <button class="nav-item clickable" @click="queueManager.playNow(song); showOptionsModal = false;">
                 play it!
             </button>
-            <button class="nav-item clickable" @click="queueManager.playNext(song); showModal = false;">
+            <button class="nav-item clickable" @click="queueManager.playNext(song); showOptionsModal = false;">
                 play it next.
             </button>
             <button 
                 v-if="typeof queueSongPosition === 'number'" 
                 class="nav-item clickable" 
-                @click="removeFromQueue(); showModal = false;"
+                @click="removeFromQueue(); showOptionsModal = false;"
             >
                 remove from queue.
             </button>
             <button v-else
                 class="nav-item clickable" 
                 @click="queueManager.addToQueue(song); 
-                showModal = false;">
+                showOptionsModal = false;">
                 add to queue.
             </button>
             <button class="nav-item clickable add-playlist">
                 add to
-                <select>
+                <select v-model="playlistToAddTo" @change="addToPlaylist">
                     <option value="" disabled selected hidden>(choose a playlist)</option>
-                    <option value="sauce">sauce</option>
+                    <option v-for="playlist in playlists" :value="playlist.playlistId">
+                        {{ playlist.name }}
+                    </option>
                 </select>
             </button>
         </ModalDialog>
@@ -66,7 +78,7 @@ function removeFromQueue() {
             <h3>{{ song.title }}</h3>
             <p>{{ song.artist }}</p>
         </div>
-        <button class="button icon" style="margin-left: auto;" @click="showModal = true;">
+        <button class="button icon" style="margin-left: auto;" @click="showOptionsModal = true;">
             <i class="fa-solid fa-ellipsis"></i>
         </button>
     </div>

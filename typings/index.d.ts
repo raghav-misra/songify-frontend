@@ -12,3 +12,17 @@ interface ISongData {
     artist: string;
     thumbnail: string;
 }
+
+interface IPlaylist {
+    _id: string;
+    name: string;
+    username: string;
+    userId: string;
+    songs: ISongData[];
+}
+
+interface ICondensedPlaylist {
+    name: string;
+    userId: string;
+    playlistId: string;
+}

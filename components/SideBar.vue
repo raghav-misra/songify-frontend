@@ -1,14 +1,31 @@
 <script setup lang="ts">
 const isAddPlaylistDialogOpen = ref(false);
+const playlistName = ref("");
+const router = useRouter();
+
+async function createPlaylist() {
+    const createPlaylistResult = await api("POST")<{
+        success: boolean;
+        playlist: ICondensedPlaylist;
+    }>(`/playlists`, {
+        name: playlistName.value
+    });
+
+    if (createPlaylistResult.success) {
+        playlists.value.push(createPlaylistResult.playlist);
+        isAddPlaylistDialogOpen.value = false;
+        router.push(`/playlist/${createPlaylistResult.playlist.playlistId}`);
+    }
+}
 </script>
     
 <template>
     <Transition name="page">
-        <ModalDialog v-if="isAddPlaylistDialogOpen">
+        <ModalDialog v-if="isAddPlaylistDialogOpen" tag="form" @submit.prevent="createPlaylist">
             <h2>title your playlist</h2>
-            <input type="text" placeholder="avid fortnite enjoyers">
+            <input v-model.trim="playlistName" type="text" placeholder="avid fortnite enjoyers" required>
             <div class="actions">
-                <button class="button solid" @click="isAddPlaylistDialogOpen = false;">
+                <button class="button solid" >
                     <i class="icon-left fa-solid fa-plus-circle"></i>
                     <b>to new adventures!</b>
                 </button>
@@ -37,8 +54,8 @@ const isAddPlaylistDialogOpen = ref(false);
         </button>
 
         <div class="playlist-selection">
-            <NavLink v-for="i in 50" class="nav-item clickable" :to="`/playlists/${i}`">
-                sauce
+            <NavLink v-for="playlist in playlists" class="nav-item clickable" :to="`/playlists/${playlist.playlistId}`">
+                {{ playlist.name }}
             </NavLink>
         </div>
     </nav>
