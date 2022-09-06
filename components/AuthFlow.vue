@@ -58,7 +58,8 @@ async function completeAuthentication() {
 
 <template>
     <ModalDialog tag="form" @submit.prevent="completeAuthentication" style="min-width: 70vw;">
-        <h1><b>looks like someones not logged in!</b></h1>
+        <h1><b>welcome to <span style="color: var(--main);">songify</span></b> ✨✨</h1>
+        <h2>looks like someones not {{ authData.isSignup ? "signed up" : "logged in" }}!</h2>
         <p v-if="formMessage.message">
             <b style="color: var(--main);">{{ formMessage.prefix }}:</b>
             {{ formMessage.message }}
