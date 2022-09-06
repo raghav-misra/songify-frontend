@@ -27,7 +27,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    overflow-y: hidden;
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;

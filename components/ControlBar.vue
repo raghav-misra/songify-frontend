@@ -39,20 +39,37 @@ const showQueueDialog = ref(false);
         <section class="control-bar">
             <div class="actions">
                 <button class="button icon" title="view queue" @click="showQueueDialog = true;">
-                    <i class="fa-solid fa-bars-staggered"></i>
+                    <span class="material-icons-round">
+                        queue_music
+                    </span>
                 </button>
                 <button class="button icon" title="previous">
-                    <i class="fa-solid fa-backward"></i>
+                    <span class="material-icons-round">
+                        fast_rewind
+                    </span>
                 </button>
-                <button class="button icon" title="play / pause">
-                    <i v-if="['paused', 'empty'].includes(player.state)" class="fa-solid fa-play"></i>
-                    <i v-else class="fa-solid fa-pause"></i>
+                <button class="button icon" title="play / pause" @click="queueManager.togglePlay()">
+                    <span v-if="player.paused || !player.playing" class="material-icons-round">
+                        play_arrow
+                    </span>
+                    <span v-else class="material-icons-round">
+                        pause
+                    </span>
                 </button>
                 <button class="button icon" title="next" @click="queueManager.moveNext();">
-                    <i class="fa-solid fa-forward"></i>
+                    <span class="material-icons-round">
+                        fast_forward
+                    </span>
                 </button>
-                <button class="button icon" title="loop song">
-                    <i class="fa-solid fa-repeat"></i>
+                <button 
+                    class="button icon" 
+                    title="loop song" 
+                    @click="player.looping = !player.looping"
+                    :class="[player.looping && 'is-active']"
+                >
+                    <span class="material-icons-round">
+                        repeat_one
+                    </span>
                 </button>
             </div>
             <div class="progress-container">
@@ -103,6 +120,10 @@ section {
 .control-bar .actions {
     margin: 0 auto;
     margin-bottom: 0.5rem;
+}
+
+.control-bar .actions>* {
+    margin: 0 0.5rem;
 }
 
 .progress-container {

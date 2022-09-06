@@ -16,11 +16,16 @@ onMounted(async () => {
     }
 });
 
-function startPlaylist() {
-    if (currentPlaylist.value) {
+function startPlaylist(shuffle: boolean) {
+    if (!currentPlaylist.value) return;
+    
+    if (shuffle) {
+        queueManager.addToQueue(...shuffleArray(currentPlaylist.value.songs));
+    } else {
         queueManager.addToQueue(...currentPlaylist.value.songs);
-        queueManager.moveNext();
     }
+
+    queueManager.moveNext();
 }
 </script>
 
@@ -32,14 +37,16 @@ function startPlaylist() {
         </header>
 
         <div class="actions">
-            <button 
-                class="button solid" 
-                style="--accent: var(--alt);" 
-                @click="startPlaylist"
-            >
+            <button class="button solid" style="--accent: var(--alt);" @click="startPlaylist(false)">
+                <span class="icon-left material-icons-round">
+                    play_arrow
+                </span>
                 play
             </button>
-            <button class="button solid" style="--accent: var(--main);">
+            <button class="button solid" style="--accent: var(--main);" @click="startPlaylist(true)">
+                <span class="icon-left material-icons-round">
+                    shuffle
+                </span>
                 shuffle
             </button>
         </div>
@@ -56,5 +63,4 @@ function startPlaylist() {
 </template>
 
 <style scoped>
-
 </style>

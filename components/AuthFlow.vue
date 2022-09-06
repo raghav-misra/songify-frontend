@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const authData = reactive({
-    isSignup: true,
+    isSignup: false,
     username: "",
     password: ""
 });
@@ -66,8 +66,10 @@ async function completeAuthentication() {
         <p v-else>lets fix that, shall we?</p>
 
         <div>
-            <input v-model="authData.isSignup" type="checkbox" class="icon-left">
-            <b>new account?</b>
+            <button class="button link solid" type="button" @click="authData.isSignup = !authData.isSignup">
+                <input class="icon-left" v-model="authData.isSignup" type="checkbox">
+                <b>is this a new account?</b>
+            </button>
         </div>
 
         <div>
@@ -81,13 +83,17 @@ async function completeAuthentication() {
         </div>
 
         <div class="actions">
-            <button class="button solid" type="submit">
-                <i class="icon-left fa-solid fa-thumbs-up"></i>
+            <button class="button solid" style="--accent: var(--alt);" type="submit">
+                <span class="material-icons-round icon-left">
+                    thumb_up
+                </span>
                 <b>dababy lets go</b>
             </button>
             <a target="_blank" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="button solid"
                 style="--accent: var(--gray);">
-                <i class="icon-left fa-solid fa-trash"></i>
+                <span class="icon-left material-icons-round">
+                    delete
+                </span>
                 <span>i have no friends</span>
             </a>
         </div>

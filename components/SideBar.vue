@@ -14,7 +14,7 @@ async function createPlaylist() {
     if (createPlaylistResult.success) {
         playlists.value.push(createPlaylistResult.playlist);
         isAddPlaylistDialogOpen.value = false;
-        router.push(`/playlist/${createPlaylistResult.playlist.playlistId}`);
+        router.push(`/playlists/${createPlaylistResult.playlist.playlistId}`);
     }
 }
 </script>
@@ -25,11 +25,16 @@ async function createPlaylist() {
             <h2>title your playlist</h2>
             <input v-model.trim="playlistName" type="text" placeholder="avid fortnite enjoyers" required>
             <div class="actions">
-                <button class="button solid" >
-                    <i class="icon-left fa-solid fa-plus-circle"></i>
+                <button class="button solid">
+                    <span class="icon-left material-icons-round">
+                        next_week
+                    </span>
                     <b>to new adventures!</b>
                 </button>
-                <button class="button solid" style="--accent: var(--gray);" @click="isAddPlaylistDialogOpen = false;">
+                <button type="button" class="button solid" style="--accent: var(--gray);" @click="isAddPlaylistDialogOpen = false;">
+                    <span class="icon-left material-icons-round">
+                        sentiment_very_dissatisfied
+                    </span>
                     meh maybe later
                 </button>
             </div>
