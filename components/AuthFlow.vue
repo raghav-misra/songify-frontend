@@ -2,7 +2,8 @@
 const authData = reactive({
     isSignup: false,
     username: "",
-    password: ""
+    password: "",
+    code: ""
 });
 
 const formMessage = reactive({
@@ -30,7 +31,8 @@ async function completeAuthentication() {
         }
     }>(authData.isSignup ? "/auth/signup" : "/auth/login", {
         username: authData.username,
-        password: authData.password
+        password: authData.password,
+        code: authData.code
     });
 
     if (response.success) {
@@ -81,6 +83,11 @@ async function completeAuthentication() {
         <div>
             <p><b>password</b></p>
             <input v-model="authData.password" type="password" placeholder="?!?!??!?!!?@?">
+        </div>
+
+        <div v-if="authData.isSignup">
+            <p><b>signup code</b></p>
+            <input v-model="authData.code" type="text" placeholder="ilovesongify6969" required>
         </div>
 
         <div class="actions">
