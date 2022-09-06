@@ -50,6 +50,26 @@ function moveNext() {
     playNow(queue.value.shift() as ISongData);
 }
 
+function movePrevious() {
+    // if no previous, just restart
+    if (lastPlayed.value.length === 0 && player.song) {
+        audioInstance.currentTime = 0;
+        return;
+    }
+
+    if (lastPlayed.value.length === 0) return;
+    // if there is previous
+    if (player.song && audioInstance.currentTime > 3) {
+        audioInstance.currentTime = 0;
+        return;
+    }
+    
+    if (player.song) {
+        queue.value.unshift(player.song);
+        playNow(lastPlayed.value.pop() as ISongData);
+    }
+}
+
 function addToQueue(...songs: ISongData[]) {
     queue.value.push(...songs);
 }
@@ -84,19 +104,22 @@ if ("mediaSession" in navigator) {
     navigator.mediaSession.setActionHandler("play", () => togglePlay());
     navigator.mediaSession.setActionHandler("pause", () => togglePlay());
     navigator.mediaSession.setActionHandler("nexttrack", () => moveNext());
-
-    watchEffect(() => {
-        if (!player.song) return;
-
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: player.song.title,
-            artist: player.song.artist,
-            album: "songify",
-            artwork: [
-                { src: player.song.thumbnail }
-            ]
-        });
-    });
+    navigator.mediaSession.setActionHandler("previoustrack", () => movePrevious());
 }
 
-export const queueManager = { playNow, playNext, moveNext, addToQueue, togglePlay };
+watchEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    if (!player.song) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: player.song.title,
+        artist: player.song.artist,
+        album: "songify",
+        artwork: [
+            { src: player.song.thumbnail }
+        ]
+    });
+});
+
+
+export const queueManager = { playNow, playNext, movePrevious, moveNext, addToQueue, togglePlay };

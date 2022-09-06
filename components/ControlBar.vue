@@ -46,12 +46,12 @@ const showQueueDialog = ref(false);
                         queue_music
                     </span>
                 </button>
-                <button class="button icon" title="previous">
+                <button class="button icon" title="previous" @click="queueManager.movePrevious">
                     <span class="material-icons-round">
                         fast_rewind
                     </span>
                 </button>
-                <button class="button icon" title="play / pause" @click="queueManager.togglePlay()">
+                <button class="button icon" title="play / pause" @click="queueManager.togglePlay">
                     <span v-if="player.paused || !player.playing" class="material-icons-round">
                         play_arrow
                     </span>
@@ -59,7 +59,7 @@ const showQueueDialog = ref(false);
                         pause
                     </span>
                 </button>
-                <button class="button icon" title="next" @click="queueManager.moveNext();">
+                <button class="button icon" title="next" @click="queueManager.moveNext">
                     <span class="material-icons-round">
                         fast_forward
                     </span>
