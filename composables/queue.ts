@@ -24,6 +24,22 @@ async function playNow(song: ISongData) {
         const env = useRuntimeConfig();
         audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
         player.song = song;
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.setActionHandler("play", () => togglePlay());
+            navigator.mediaSession.setActionHandler("pause", () => togglePlay());
+            navigator.mediaSession.setActionHandler("nexttrack", () => moveNext());
+            navigator.mediaSession.setActionHandler("previoustrack", () => movePrevious());
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: player.song.title,
+                artist: player.song.artist,
+                album: "songify",
+                artwork: [
+                    { src: player.song.thumbnail }
+                ]
+            });
+        }
     }
 
     await audioInstance.play();
@@ -63,7 +79,7 @@ function movePrevious() {
         audioInstance.currentTime = 0;
         return;
     }
-    
+
     if (player.song) {
         queue.value.unshift(player.song);
         playNow(lastPlayed.value.pop() as ISongData);
@@ -98,27 +114,6 @@ audioInstance.addEventListener("play", () => {
 
 audioInstance.addEventListener("pause", () => {
     player.paused = true;
-});
-
-if ("mediaSession" in navigator) {
-    navigator.mediaSession.setActionHandler("play", () => togglePlay());
-    navigator.mediaSession.setActionHandler("pause", () => togglePlay());
-    navigator.mediaSession.setActionHandler("nexttrack", () => moveNext());
-    navigator.mediaSession.setActionHandler("previoustrack", () => movePrevious());
-}
-
-watchEffect(() => {
-    if (!("mediaSession" in navigator)) return;
-    if (!player.song) return;
-
-    navigator.mediaSession.metadata = new MediaMetadata({
-        title: player.song.title,
-        artist: player.song.artist,
-        album: "songify",
-        artwork: [
-            { src: player.song.thumbnail }
-        ]
-    });
 });
 
 
