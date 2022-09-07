@@ -104,17 +104,24 @@ aside {
     align-items: center;
 }
 
-section {
+.mobile-controls section {
     flex: 1;
+}
+
+.desktop-controls section {
+    width: 33vw;
 }
 
 .meta-bar {
     display: flex;
     align-items: center;
+    overflow: hidden;
 }
 
 .meta-bar b {
     display: block;
+    width: 100%;
+    white-space: nowrap;
 }
 
 .control-bar {
