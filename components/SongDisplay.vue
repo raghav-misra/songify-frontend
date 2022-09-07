@@ -7,6 +7,8 @@ const props = defineProps<{
 const showOptionsModal = ref(false);
 const playlistToAddTo = ref("");
 
+const ownedPlaylists = computed(() => playlists.value.filter(p => p.userId === userState.user._id));
+
 function removeFromQueue() {
     if (props.isInQueue) {
         const index = queue.value.findIndex(s => s.id === props.song.id);
@@ -59,7 +61,7 @@ async function addToPlaylist() {
                 add to
                 <select v-model="playlistToAddTo" @change="addToPlaylist">
                     <option value="" disabled selected hidden>(choose a playlist)</option>
-                    <option v-for="playlist in playlists" :value="playlist.playlistId">
+                    <option v-for="playlist in ownedPlaylists" :value="playlist.playlistId">
                         {{ playlist.name }}
                     </option>
                 </select>
