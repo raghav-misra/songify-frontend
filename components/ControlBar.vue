@@ -65,24 +65,30 @@ const showQueueDialog = ref(false);
     </aside>
 
     <aside class="mobile-controls is-mobile">
-        <section class="meta-bar">
-            <div class="thumbnail">
-                <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
-            </div>
-            <div>
-                <b>{{ player.song?.title || "bruh im done" }}</b>
-                <small>{{ player.song?.artist || "play a song already" }}</small>
-            </div>
-        </section>
+        <div style="display: flex; align-items: center;">
+            <section class="meta-bar">
+                <div class="thumbnail">
+                    <img v-if="player.song?.thumbnail" :src="player.song.thumbnail">
+                </div>
+                <div>
+                    <b>{{ player.song?.title || "bruh im done" }}</b>
+                    <small>{{ player.song?.artist || "play a song already" }}</small>
+                </div>
+            </section>
 
-        <button class="button icon icon-left" title="play / pause" @click="queueManager.togglePlay">
-            <span v-if="player.paused || !player.playing" class="material-icons-round">
-                play_arrow
-            </span>
-            <span v-else class="material-icons-round">
-                pause
-            </span>
-        </button>
+            <button class="button icon icon-left" title="play / pause" @click="queueManager.togglePlay">
+                <span v-if="player.paused || !player.playing" class="material-icons-round">
+                    play_arrow
+                </span>
+                <span v-else class="material-icons-round">
+                    pause
+                </span>
+            </button>
+        </div>
+
+        <div class="mobile-progress">
+            <div class="mobile-progress-filler" :style="`width: ${progressBarWidth}%;`"></div>
+        </div>
     </aside>
 </template>
 
@@ -100,8 +106,7 @@ aside {
 
 .mobile-controls {
     padding: 0.25rem 0;
-    height: 3.75rem;
-    align-items: center;
+    flex-direction: column;
 }
 
 .mobile-controls section {
@@ -163,6 +168,18 @@ aside {
     width: 50%;
     background: var(--alt);
     border-radius: 10px;
+}
+
+.mobile-progress {
+    background: var(--dark);
+    height: 0.4rem;
+    display: flex;
+    align-items: stretch;
+    margin-top: 0.2rem;
+}
+
+.mobile-progress-filler {
+    background: var(--alt);
 }
 
 .thumbnail {
