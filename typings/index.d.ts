@@ -26,3 +26,27 @@ interface ICondensedPlaylist {
     userId: string;
     playlistId: string;
 }
+
+interface ICENSOREDifyTracksResponse {
+    items?: ({
+        track: {
+            name: string;
+            artists: ({
+                name: string;
+            })[];
+            album: {
+                images: ({
+                    url: string;
+                })[];
+            };
+        }
+    })[];
+    next?: string;
+}
+
+interface ICENSOREDifyPlaylistResponse {
+    name: string;
+    href: string;
+    tracks?: ICENSOREDifyTracksResponse[];
+    next?: string;
+}

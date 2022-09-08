@@ -19,12 +19,35 @@ async function createPlaylist() {
         router.push(`/playlists/${createPlaylistResult.playlist.playlistId}`);
     }
 }
+
+function initiatePlaylistImport() {
+    const config = useRuntimeConfig();
+
+    const payload = new URLSearchParams({
+        client_id: config.public.censoredifyClientId,
+        response_type: "code",
+        redirect_uri: `${location.protocol}//${location.host}/import`,
+        scope: "playlist-read-private user-read-private"
+    });
+
+    location.href = `https://accounts.spotify.com/authorize?${payload.toString()}`;
+}
 </script>
     
 <template>
     <Transition name="page">
         <ModalDialog v-if="isAddPlaylistDialogOpen" tag="form" @submit.prevent="createPlaylist">
-            <h2>title your playlist</h2>
+            <div style="display: flex; align-items: center;">
+                <h2>create a playlist</h2>
+                <button 
+                    class="icon-right button solid" 
+                    style="--accent: var(--alt);"
+                    @click="initiatePlaylistImport"
+                    type="button"
+                >
+                    import from&nbsp;<b>botify</b>
+                </button>
+                </div>
             <input v-model.trim="playlistName" type="text" placeholder="avid fortnite enjoyers" required>
             <div class="actions">
                 <button class="button solid">

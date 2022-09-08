@@ -13,7 +13,9 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            apiEndpoint: process.env.API_ENDPOINT
+            apiEndpoint: process.env.API_ENDPOINT,
+            censoredifyClientId: process.env.CENSOREDIFY_CLIENT_ID,
+            censoredifyClientSecret: process.env.CENSOREDIFY_CLIENT_SECRET
         }
     }
 });
