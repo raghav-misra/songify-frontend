@@ -61,7 +61,13 @@ const showQueueDialog = ref(false);
             </div>
         </section>
 
-        <section></section>
+        <section class="volume-bar">
+            <span class="material-icons-round icon-left">
+                volume_up
+            </span>
+            <span class="icon-left">{{ player.volume }}%</span>
+            <input v-model="player.volume" type="range" :min="0" :max="100">
+        </section>
     </aside>
 
     <aside class="mobile-controls is-mobile">
@@ -168,6 +174,12 @@ aside {
     width: 50%;
     background: var(--alt);
     border-radius: 10px;
+}
+
+.volume-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .mobile-progress {

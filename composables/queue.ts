@@ -10,7 +10,12 @@ export const player = reactive({
     looping: false,
     currentPosition: 0,
     length: 0,
+    volume: 100
 });
+
+watchEffect(() => {
+    audioInstance.volume = player.volume / 100;
+})
 
 const updatePosition = () => { player.currentPosition = audioInstance.currentTime; };
 let updatePositionInterval = -1;
