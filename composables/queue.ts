@@ -1,7 +1,39 @@
+import { Howler, Howl } from "howler";
+
 export const queue = ref<ISongData[]>([]);
 const lastPlayed = ref<ISongData[]>([]);
 
-const audioInstance = new Audio();
+let audioInstance: Howl | null = null;
+
+//@ts-ignore
+window.__audioInstance = () => audioInstance;
+
+function createAudioInstance(src: string) {
+    let tempInstance = new Howl({
+        src,
+        html5: true,
+    });
+
+    tempInstance.on("end", () => {
+        if (player.looping) {
+            audioInstance?.pos(0);
+            audioInstance?.play();
+        } else {
+            moveNext();
+        }
+    })
+
+    tempInstance.on("play", () => {
+        player.playing = true;
+        player.paused = false;
+    });
+
+    tempInstance.on("pause", () => {
+        player.paused = true;
+    });
+
+    return tempInstance;
+}
 
 export const player = reactive({
     song: null as ISongData | null,
@@ -13,21 +45,30 @@ export const player = reactive({
     volume: 100
 });
 
-watchEffect(() => {
-    audioInstance.volume = player.volume / 100;
-})
+//@ts-ignore
+window.__player = () => player;
 
-const updatePosition = () => { player.currentPosition = audioInstance.currentTime; };
+watchEffect(() => {
+    const formattedVolume = player.volume;
+    if (audioInstance) {
+        audioInstance.volume(formattedVolume / 100);
+    }
+});
+
+const updatePosition = () => { player.currentPosition = audioInstance?.seek() || 0; };
 let updatePositionInterval = -1;
 
 async function playNow(song: ISongData) {
-    audioInstance.pause();
+    window.clearInterval(updatePositionInterval);
 
-    if (player.song?.id === song.id) {
-        audioInstance.currentTime = 0;
+    if (audioInstance && player.song?.id === song.id) {
+        audioInstance.seek(0);
+        updatePositionInterval = window.setInterval(updatePosition, 100);
     } else {
         const env = useRuntimeConfig();
-        audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
+
+        let nextAudioInstance = createAudioInstance(`${env.public.apiEndpoint}/stream/${song.id}`);
+
         player.song = song;
 
         if ("mediaSession" in navigator) {
@@ -45,11 +86,21 @@ async function playNow(song: ISongData) {
                 ]
             });
         }
-    }
 
-    await audioInstance.play();
-    player.length = audioInstance.duration;
-    updatePositionInterval = window.setInterval(updatePosition, 100);
+        const vol = player.volume / 100;
+
+        (async function crossfadedLoop(enteringInstance: Howl, leavingInstance: Howl | null) {
+            // Fade in entering instance
+            enteringInstance.pos(0);
+            enteringInstance.play();
+            enteringInstance.fade(0, vol, 2000);
+            leavingInstance?.fade(vol, 0, 2000);
+            audioInstance = enteringInstance;
+            updatePositionInterval = window.setInterval(updatePosition, 100);
+            await wait(5000);
+            leavingInstance?.unload();
+        }) (nextAudioInstance, audioInstance);
+    }
 }
 
 function playNext(song: ISongData) {
@@ -73,15 +124,15 @@ function moveNext() {
 
 function movePrevious() {
     // if no previous, just restart
-    if (lastPlayed.value.length === 0 && player.song) {
-        audioInstance.currentTime = 0;
+    if (audioInstance && lastPlayed.value.length === 0 && player.song) {
+        audioInstance.seek(0);
         return;
     }
 
     if (lastPlayed.value.length === 0) return;
     // if there is previous
-    if (player.song && audioInstance.currentTime > 3) {
-        audioInstance.currentTime = 0;
+    if (audioInstance && player.song && audioInstance.seek() > 3) {
+        audioInstance.seek(0);
         return;
     }
 
@@ -96,30 +147,14 @@ function addToQueue(...songs: ISongData[]) {
 }
 
 function togglePlay() {
+    if (!audioInstance) return;
+
     if (player.paused) {
         audioInstance.play();
     } else if (player.playing) {
         audioInstance.pause();
     }
 }
-
-audioInstance.addEventListener("ended", () => {
-    if (player.looping) {
-        audioInstance.currentTime = 0;
-        audioInstance.play();
-    } else {
-        moveNext();
-    }
-});
-
-audioInstance.addEventListener("play", () => {
-    player.playing = true;
-    player.paused = false;
-});
-
-audioInstance.addEventListener("pause", () => {
-    player.paused = true;
-});
 
 
 export const queueManager = { playNow, playNext, movePrevious, moveNext, addToQueue, togglePlay };
