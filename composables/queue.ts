@@ -26,6 +26,7 @@ function createAudioInstance(src: string) {
     tempInstance.on("play", () => {
         player.playing = true;
         player.paused = false;
+        player.length = tempInstance.duration();
     });
 
     tempInstance.on("pause", () => {
@@ -63,7 +64,6 @@ async function playNow(song: ISongData) {
 
     if (audioInstance && player.song?.id === song.id) {
         audioInstance.seek(0);
-        updatePositionInterval = window.setInterval(updatePosition, 100);
     } else {
         const env = useRuntimeConfig();
 
@@ -88,19 +88,19 @@ async function playNow(song: ISongData) {
         }
 
         const vol = player.volume / 100;
-
         (async function crossfadedLoop(enteringInstance: Howl, leavingInstance: Howl | null) {
             // Fade in entering instance
             enteringInstance.pos(0);
             enteringInstance.play();
-            enteringInstance.fade(0, vol, 2000);
+            enteringInstance.fade(0, vol, 500);
             leavingInstance?.fade(vol, 0, 2000);
             audioInstance = enteringInstance;
-            updatePositionInterval = window.setInterval(updatePosition, 100);
             await wait(5000);
             leavingInstance?.unload();
         }) (nextAudioInstance, audioInstance);
     }
+
+    updatePositionInterval = window.setInterval(updatePosition, 100);
 }
 
 function playNext(song: ISongData) {
