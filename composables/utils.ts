@@ -21,7 +21,3 @@ export function transformTime(time: number) {
     const sec = Math.floor(time % 60).toString();
     return `${min}:${sec.length < 2 ? `0${sec}` : sec}`;
 }
-
-export function wait(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
