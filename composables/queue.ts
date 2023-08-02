@@ -28,6 +28,8 @@ const updatePosition = () => { player.currentPosition = audioHowler?.seek() || 0
 let updatePositionInterval = -1;
 
 function playNow(song: ISongData) {
+    Howler.stop();
+    Howler.unload();
     audioHowler?.pause();
     clearInterval(updatePositionInterval);
 
@@ -37,7 +39,9 @@ function playNow(song: ISongData) {
         const env = useRuntimeConfig();
         audioHowler = new Howl({
             src: [`${env.public.apiEndpoint}/stream/${song.id}`],
-            html5: true
+            html5: true,
+            preload: true,
+            loop: player.looping
         });
 
         player.song = song;
@@ -59,6 +63,14 @@ function playNow(song: ISongData) {
         }
     }
 
+    audioHowler?.once("loaderror", () => {
+        Howler.unload();
+    });
+
+    audioHowler?.once("playerror", () => {
+        Howler.unload();
+    });
+
     audioHowler?.on("play", () => {
         player.playing = true;
         player.paused = false;
@@ -68,9 +80,20 @@ function playNow(song: ISongData) {
         player.paused = true;
     });
 
-    audioHowler?.play();
-    player.length = audioHowler?.duration() || 0;
-    updatePositionInterval = window.setInterval(updatePosition, 100);
+    audioHowler?.on("end", () => {
+        if (player.looping) {
+            audioHowler?.seek();
+            audioHowler?.play();
+        } else {
+            moveNext();
+        }
+    })
+
+    audioHowler?.once("load", () => {
+        audioHowler?.play();
+        player.length = audioHowler?.duration() || 0;
+        updatePositionInterval = window.setInterval(updatePosition, 100);
+    });
 }
 
 function playNext(song: ISongData) {
@@ -78,12 +101,7 @@ function playNext(song: ISongData) {
 }
 
 function moveNext() {
-    if (player.looping) {
-        audioHowler?.seek(0);
-        return;
-    }
-
-    else if (player.song) {
+    if (player.song) {
         lastPlayed.value.push(player.song);
     }
 
@@ -132,15 +150,6 @@ function togglePlay() {
 watchEffect(() => {
     audioHowler?.loop(player.looping);
 });
-
-// audioInstance.addEventListener("ended", () => {
-//     if (player.looping) {
-//         audioInstance.currentTime = 0;
-//         audioInstance.play();
-//     } else {
-//         moveNext();
-//     }
-// });
 
 
 export const queueManager = { playNow, playNext, movePrevious, moveNext, addToQueue, togglePlay };
