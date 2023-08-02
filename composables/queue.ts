@@ -1,10 +1,7 @@
-import { Howl, Howler } from "howler";
-
 export const queue = ref<ISongData[]>([]);
 const lastPlayed = ref<ISongData[]>([]);
 
-// const audioInstance = new Audio();
-let audioHowler: Howl | null = null;
+const audioInstance = new Audio();
 
 export const player = reactive({
     song: null as ISongData | null,
@@ -17,33 +14,20 @@ export const player = reactive({
 });
 
 watchEffect(() => {
-    // audioInstance.volume = player.volume / 100;
-    audioHowler?.volume(player.volume / 100);
+    audioInstance.volume = player.volume / 100;
 })
 
-const updatePosition = () => { player.currentPosition = audioHowler?.seek() || 0; };
+const updatePosition = () => { player.currentPosition = audioInstance.currentTime; };
 let updatePositionInterval = -1;
 
-function playNow(song: ISongData) {
-    Howler.stop();
-    Howler.unload();
-    audioHowler?.pause();
-    clearInterval(updatePositionInterval);
+async function playNow(song: ISongData) {
+    audioInstance.pause();
 
     if (player.song?.id === song.id) {
-        audioHowler?.seek(0);
+        audioInstance.currentTime = 0;
     } else {
         const env = useRuntimeConfig();
-        audioHowler = new Howl({
-            src: [`${env.public.apiEndpoint}/stream/${song.id}`],
-            html5: true,
-            preload: true,
-            loop: player.looping
-        });
-
-        //@ts-ignore
-        console.log("Created Howl", audioHowler, audioHowler._src);
-
+        audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
         player.song = song;
 
         if ("mediaSession" in navigator) {
@@ -63,45 +47,9 @@ function playNow(song: ISongData) {
         }
     }
 
-    audioHowler?.once("loaderror", (_, error) => {
-        //@ts-ignore
-        console.log("Howl Load Error", error, audioHowler, audioHowler._src);
-        Howler.unload();
-    });
-
-    audioHowler?.once("playerror", (_, error) => {
-        //@ts-ignore
-        console.log("Howl Play Error", error, audioHowler, audioHowler._src);
-        Howler.unload();
-    });
-
-    audioHowler?.on("play", () => {
-        //@ts-ignore
-        console.log("Howl Play", audioHowler, audioHowler._src);
-        player.playing = true;
-        player.paused = false;
-    });
-
-    audioHowler?.on("pause", () => {
-        //@ts-ignore
-        console.log("Howl Pause", audioHowler, audioHowler._src);
-        player.paused = true;
-    });
-
-    audioHowler?.on("end", () => {
-        if (player.looping) {
-            audioHowler?.seek();
-            audioHowler?.play();
-        } else {
-            moveNext();
-        }
-    })
-
-    audioHowler?.once("load", () => {
-        audioHowler?.play();
-        player.length = audioHowler?.duration() || 0;
-        updatePositionInterval = window.setInterval(updatePosition, 100);
-    });
+    await audioInstance.play();
+    player.length = audioInstance.duration;
+    updatePositionInterval = window.setInterval(updatePosition, 100);
 }
 
 function playNext(song: ISongData) {
@@ -126,14 +74,14 @@ function moveNext() {
 function movePrevious() {
     // if no previous, just restart
     if (lastPlayed.value.length === 0 && player.song) {
-        audioHowler?.seek(0);
+        audioInstance.currentTime = 0;
         return;
     }
 
     if (lastPlayed.value.length === 0) return;
     // if there is previous
-    if (player.song && (audioHowler?.seek() || 0) > 3) {
-        audioHowler?.seek(0);
+    if (player.song && audioInstance.currentTime > 3) {
+        audioInstance.currentTime = 0;
         return;
     }
 
@@ -149,14 +97,28 @@ function addToQueue(...songs: ISongData[]) {
 
 function togglePlay() {
     if (player.paused) {
-        audioHowler?.play();
+        audioInstance.play();
     } else if (player.playing) {
-        audioHowler?.pause();
+        audioInstance.pause();
     }
 }
 
-watchEffect(() => {
-    audioHowler?.loop(player.looping);
+audioInstance.addEventListener("ended", () => {
+    if (player.looping) {
+        audioInstance.currentTime = 0;
+        audioInstance.play();
+    } else {
+        moveNext();
+    }
+});
+
+audioInstance.addEventListener("play", () => {
+    player.playing = true;
+    player.paused = false;
+});
+
+audioInstance.addEventListener("pause", () => {
+    player.paused = true;
 });
 
 
