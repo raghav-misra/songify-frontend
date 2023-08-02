@@ -8,10 +8,12 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@types/howler": "^2.2.7",
     "nuxt": "3.0.0-rc.8"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.1",
+    "howler": "^2.2.3",
     "normalize.css": "^8.0.1"
   }
 }

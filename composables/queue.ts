@@ -1,7 +1,13 @@
+import { Howl, Howler } from "howler";
+
 export const queue = ref<ISongData[]>([]);
 const lastPlayed = ref<ISongData[]>([]);
 
-const audioInstance = new Audio();
+// const audioInstance = new Audio();
+let audioHowler: Howl | null = null;
+
+//@ts-ignore
+window.ah = Howl;
 
 export const player = reactive({
     song: null as ISongData | null,
@@ -14,20 +20,26 @@ export const player = reactive({
 });
 
 watchEffect(() => {
-    audioInstance.volume = player.volume / 100;
+    // audioInstance.volume = player.volume / 100;
+    audioHowler?.volume(player.volume / 100);
 })
 
-const updatePosition = () => { player.currentPosition = audioInstance.currentTime; };
+const updatePosition = () => { player.currentPosition = audioHowler?.seek() || 0; };
 let updatePositionInterval = -1;
 
-async function playNow(song: ISongData) {
-    audioInstance.pause();
+function playNow(song: ISongData) {
+    audioHowler?.pause();
+    clearInterval(updatePositionInterval);
 
     if (player.song?.id === song.id) {
-        audioInstance.currentTime = 0;
+        audioHowler?.seek(0);
     } else {
         const env = useRuntimeConfig();
-        audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
+        audioHowler = new Howl({
+            src: [`${env.public.apiEndpoint}/stream/${song.id}`],
+            html5: true
+        });
+
         player.song = song;
 
         if ("mediaSession" in navigator) {
@@ -47,8 +59,17 @@ async function playNow(song: ISongData) {
         }
     }
 
-    await audioInstance.play();
-    player.length = audioInstance.duration;
+    audioHowler?.on("play", () => {
+        player.playing = true;
+        player.paused = false;
+    });
+
+    audioHowler?.on("pause", () => {
+        player.paused = true;
+    });
+
+    audioHowler?.play();
+    player.length = audioHowler?.duration() || 0;
     updatePositionInterval = window.setInterval(updatePosition, 100);
 }
 
@@ -74,14 +95,14 @@ function moveNext() {
 function movePrevious() {
     // if no previous, just restart
     if (lastPlayed.value.length === 0 && player.song) {
-        audioInstance.currentTime = 0;
+        audioHowler?.seek(0);
         return;
     }
 
     if (lastPlayed.value.length === 0) return;
     // if there is previous
-    if (player.song && audioInstance.currentTime > 3) {
-        audioInstance.currentTime = 0;
+    if (player.song && (audioHowler?.seek() || 0) > 3) {
+        audioHowler?.seek(0);
         return;
     }
 
@@ -97,29 +118,24 @@ function addToQueue(...songs: ISongData[]) {
 
 function togglePlay() {
     if (player.paused) {
-        audioInstance.play();
+        audioHowler?.play();
     } else if (player.playing) {
-        audioInstance.pause();
+        audioHowler?.pause();
     }
 }
 
-audioInstance.addEventListener("ended", () => {
-    if (player.looping) {
-        audioInstance.currentTime = 0;
-        audioInstance.play();
-    } else {
-        moveNext();
-    }
+watchEffect(() => {
+    audioHowler?.loop(player.looping);
 });
 
-audioInstance.addEventListener("play", () => {
-    player.playing = true;
-    player.paused = false;
-});
-
-audioInstance.addEventListener("pause", () => {
-    player.paused = true;
-});
+// audioInstance.addEventListener("ended", () => {
+//     if (player.looping) {
+//         audioInstance.currentTime = 0;
+//         audioInstance.play();
+//     } else {
+//         moveNext();
+//     }
+// });
 
 
 export const queueManager = { playNow, playNext, movePrevious, moveNext, addToQueue, togglePlay };
