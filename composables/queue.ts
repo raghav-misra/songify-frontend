@@ -6,9 +6,6 @@ const lastPlayed = ref<ISongData[]>([]);
 // const audioInstance = new Audio();
 let audioHowler: Howl | null = null;
 
-//@ts-ignore
-window.ah = Howl;
-
 export const player = reactive({
     song: null as ISongData | null,
     playing: false,
@@ -44,6 +41,9 @@ function playNow(song: ISongData) {
             loop: player.looping
         });
 
+        //@ts-ignore
+        console.log("Created Howl", audioHowler, audioHowler._src);
+
         player.song = song;
 
         if ("mediaSession" in navigator) {
@@ -63,20 +63,28 @@ function playNow(song: ISongData) {
         }
     }
 
-    audioHowler?.once("loaderror", () => {
+    audioHowler?.once("loaderror", (_, error) => {
+        //@ts-ignore
+        console.log("Howl Load Error", error, audioHowler, audioHowler._src);
         Howler.unload();
     });
 
-    audioHowler?.once("playerror", () => {
+    audioHowler?.once("playerror", (_, error) => {
+        //@ts-ignore
+        console.log("Howl Play Error", error, audioHowler, audioHowler._src);
         Howler.unload();
     });
 
     audioHowler?.on("play", () => {
+        //@ts-ignore
+        console.log("Howl Play", audioHowler, audioHowler._src);
         player.playing = true;
         player.paused = false;
     });
 
     audioHowler?.on("pause", () => {
+        //@ts-ignore
+        console.log("Howl Pause", audioHowler, audioHowler._src);
         player.paused = true;
     });
 
