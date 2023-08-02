@@ -78,7 +78,12 @@ function playNext(song: ISongData) {
 }
 
 function moveNext() {
-    if (player.song) {
+    if (player.looping) {
+        audioHowler?.seek(0);
+        return;
+    }
+
+    else if (player.song) {
         lastPlayed.value.push(player.song);
     }
 
