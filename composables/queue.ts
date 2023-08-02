@@ -2,6 +2,8 @@ export const queue = ref<ISongData[]>([]);
 const lastPlayed = ref<ISongData[]>([]);
 
 const audioInstance = new Audio();
+audioInstance.canPlayType = (type) => { console.log(type); return "probably"; };
+
 
 export const player = reactive({
     song: null as ISongData | null,
@@ -21,13 +23,21 @@ const updatePosition = () => { player.currentPosition = audioInstance.currentTim
 let updatePositionInterval = -1;
 
 async function playNow(song: ISongData) {
-    audioInstance.pause();
+    if (!audioInstance.parentNode) {
+        document.body.appendChild(audioInstance);
+    }
 
     if (player.song?.id === song.id) {
         audioInstance.currentTime = 0;
     } else {
+        audioInstance.pause();
+
         const env = useRuntimeConfig();
-        audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
+
+        const songRes = await fetch(`${env.public.apiEndpoint}/stream/${song.id}`);
+        audioInstance.src = URL.createObjectURL(await songRes.blob());
+
+        // audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
         player.song = song;
 
         if ("mediaSession" in navigator) {

@@ -1,17 +1,15 @@
 <template>
     <div id="root">
-        <TransitionGroup name="page">
-            <template v-if="isLoggedIn">
-                <main>
-                    <SideBar />
-                    <NuxtPage />
-                </main>
-                <ControlBar />
-            </template>
+        <template v-if="isLoggedIn">
+            <main>
+                <SideBar />
+                <NuxtPage />
+            </main>
+            <ControlBar />
+        </template>
 
 
-            <AuthFlow v-else />
-        </TransitionGroup>
+        <AuthFlow v-else />
     </div>
 </template>
 
