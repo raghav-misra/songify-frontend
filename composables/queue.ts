@@ -34,9 +34,6 @@ async function playNow(song: ISongData) {
 
         const env = useRuntimeConfig();
 
-        // const songRes = await fetch(`${env.public.apiEndpoint}/stream/${song.id}`);
-        // audioInstance.src = URL.createObjectURL(await songRes.blob());
-
         audioInstance.src = `${env.public.apiEndpoint}/stream/${song.id}`;
         player.song = song;
 

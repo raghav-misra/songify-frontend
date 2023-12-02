@@ -8,6 +8,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/pwa": "^3.3.5",
     "@types/howler": "^2.2.7",
     "nuxt": "3.0.0-rc.8"
   },

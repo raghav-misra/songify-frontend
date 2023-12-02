@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     css: ["~~/styles/main.css"],
     meta: {
         link: [
-            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk&family=Material+Icons+Round&display=swap" }
+            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk&family=Material+Icons+Round&display=swap" },
+            { rel: "manifest", href: "/manifest.json" }
         ],
         title: "songify"
     },
@@ -17,5 +18,5 @@ export default defineNuxtConfig({
             censoredifyClientId: process.env.CENSOREDIFY_CLIENT_ID,
             censoredifyClientSecret: process.env.CENSOREDIFY_CLIENT_SECRET
         }
-    }
+    },
 });
